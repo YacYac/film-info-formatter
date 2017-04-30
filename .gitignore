@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+.DS_Store
 
 # Runtime data
 pids
@@ -41,3 +42,6 @@ client_secret.json
 
 # Configuration Infomation
 config.js
+
+# dist directory
+dist/

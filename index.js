@@ -22,7 +22,7 @@ fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   }
   // Authorize a client with the loaded credentials, then call the
   // Google Sheets API.
-  authorize(JSON.parse(content), listCredits);
+  authorize(JSON.parse(content), retrieveCredits);
 });
 
 /**
@@ -103,7 +103,7 @@ function storeToken(token) {
  * Print the names and majors of students in a sample spreadsheet:
  * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
  */
-function listCredits(auth) {
+function retrieveCredits(auth) {
   var sheets = google.sheets('v4');
   sheets.spreadsheets.values.get({
     auth: auth,
@@ -122,7 +122,63 @@ function listCredits(auth) {
     var films = _.map(films, function(film) {
         return _.object(keys,film);
     });
-    console.log(films[200]);
-    console.log(films.length);
+    makeNFOs(films);
   });
+}
+
+function makeNFOs(filmList) {
+    
+    const festivalYear = 2017;
+    filmList.forEach(function(film) {
+        let filmString = "";
+        filmString += '<movie>\n';
+        filmString += `\t<id>${film.id}</id>\n`;
+        filmString += `\t<title>${film.title}</title>\n`;
+        filmString += `\t<runtime>${film.runtime}</runtime>\n`;
+        filmString += `\t<genre>${film.genre_category}</genre>\n`;
+        filmString += `\t<year>${festivalYear}</year>\n`;
+        filmString += `\t<plot>${film.plot}</plot>\n`;
+        filmString += `\t<studio>${film.studio}</studio>\n`;
+        filmString += `\t<director>${film.director}</director>\n`;
+        if (film.genre_aboriginal !== '') {
+            filmString += `\t<tag>${film.genre_aboriginal}</tag>\n`;
+        }
+        if (film.genre_emerging !== '') {
+            filmString += `\t<tag>${film.genre_emerging}</tag>\n`;
+        }
+        if (film.genre_ruth_shaw !== '') {
+            filmString += `\t<tag>${film.genre_ruth_shaw}</tag>\n`;
+        }
+        if (film.tag_nom !== '') {
+            filmString += `\t<tag>${film.tag_nom}</tag>\n`;
+        }
+        if (film.tag_category_nom !== '') {
+            filmString += `\t<tag>${film.tag_category_nom}</tag>\n`;
+        }
+        if (film.tag_aboriginal_nom !== '') {
+            filmString += `\t<tag>${film.tag_aboriginal_nom}</tag>\n`;
+        }
+        if (film.tag_emerging_nom !== '') {
+            filmString += `\t<tag>${film.tag_emerging_nom}</tag>\n`;
+        }
+        if (film.tag_ruth_shaw_nom !== '') {
+            filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
+        }
+        if (film.tag_ruth_shaw_nom !== '') {
+            filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
+        }
+        if (film.tag_dir_nonfiction_nom !== '') {
+            filmString += `\t<tag>${film.tag_dir_nonfiction_nom}</tag>\n`;
+        }
+        if (film.tag_research_nom !== '') {
+            filmString += `\t<tag>${film.tag_research_nom}</tag>\n`;
+        }
+        filmString += '\t<playcount>0</playcount>\n';
+        filmString += '</movie>';
+
+        fs.writeFile(('dist/' + film.filename + '.nfo'), filmString, 'utf8', (err) => {
+            if (err) throw err;
+            console.log(`${film.filename}.nfo saved.`);
+        });
+        }, this);
 }
