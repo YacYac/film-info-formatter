@@ -38,3 +38,6 @@ jspm_packages
 
 # Google Authentication Info
 client_secret.json
+
+# Configuration Infomation
+config.js
