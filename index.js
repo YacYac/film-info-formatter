@@ -127,8 +127,8 @@ function retrieveCredits(auth) {
 }
 
 function makeNFOs(filmList) {
-    
     const festivalYear = 2017;
+    
     filmList.forEach(function(film) {
         let filmString = "";
         filmString += '<movie>\n';
@@ -180,5 +180,5 @@ function makeNFOs(filmList) {
             if (err) throw err;
             console.log(`${film.filename}.nfo saved.`);
         });
-        }, this);
+    }, this);
 }
