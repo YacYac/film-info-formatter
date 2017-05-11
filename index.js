@@ -6,6 +6,7 @@ var google = require('googleapis');
 var googleAuth = require('google-auth-library');
 var config = require('./config.js');
 var _ = require('underscore');
+var del = require('del');
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
@@ -122,13 +123,15 @@ function retrieveCredits(auth) {
     var films = _.map(films, function(film) {
         return _.object(keys,film);
     });
-    makeFiles(films);
+    del(['dist/NFOs/*','dist/WebSnippets/*']).then(() => {
+      makeFiles(films);
+    });
   });
 }
 
 function makeFiles(filmList) {
     const festivalYear = 2017;
-    
+
     filmList.forEach(function(film) {
         makeNFO(film, festivalYear);
         makeWebSnippet(film);

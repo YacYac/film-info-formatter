@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/YacYac/film-info-formatter#readme",
   "dependencies": {
+    "del": "^2.2.2",
     "google-auth-library": "^0.10.0",
     "googleapis": "^19.0.0",
     "underscore": "^1.8.3"
