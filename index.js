@@ -123,6 +123,7 @@ function retrieveCredits(auth) {
     var films = _.map(films, function(film) {
         return _.object(keys,film);
     });
+
     del(['dist/NFOs/*','dist/WebSnippets/*']).then(() => {
       makeFiles(films);
     });
@@ -133,15 +134,45 @@ function makeFiles(filmList) {
     const festivalYear = 2017;
 
     filmList.forEach(function(film) {
-        makeNFO(film, festivalYear);
-        makeWebSnippet(film);
+        let nominations = makeNominationsArray(film);
+        makeNFO(film, festivalYear, nominations);
+        makeWebSnippet(film, nominations);
     }, this);
 }
 
-function makeWebSnippet(film) {
+function makeNominationsArray(film, nominations) {
+  let nominationsArray = new Array();
+
+  if (film.tag_category_nom) {
+      nominationsArray.push(film.genre_category);
+  }
+  if (film.tag_aboriginal_nom) {
+      nominationsArray.push(film.tag_aboriginal_nom);
+  }
+  if (film.tag_emerging_nom) {
+      nominationsArray.push(film.tag_emerging_nom);
+  }
+  if (film.tag_ruth_shaw_nom) {
+      nominationsArray.push(film.tag_ruth_shaw_nom);
+  }
+  if (film.tag_dir_fiction_nom) {
+      nominationsArray.push(film.tag_dir_fiction_nom);
+  }
+  if (film.tag_dir_nonfiction_nom) {
+      nominationsArray.push(film.tag_dir_nonfiction_nom);
+  }
+  if (film.tag_research_nom) {
+      nominationsArray.push(film.tag_research_nom);
+  }
+
+  return nominationsArray;
+}
+
+function makeWebSnippet(film, nominations) {
   let webSnippet = "";
   let image = 10200; 
-  if (film.screening_string) {
+  
+  if (film.screening_string || nominations.length > 0) {
     // Add black header row for menu
     webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="80px" bg_color="#000000"][vc_column][/vc_column][/vc_row]';
     // Add image row
@@ -154,8 +185,9 @@ function makeWebSnippet(film) {
     webSnippet += `<span class="screening-time">${film.screening_string}</span>\n`;
     webSnippet += `<h3>Synpopsis</h3>\n${film.plot}\n`;
     webSnippet += `<h3>Runtime<\h3>\n${film.runtime}\n`;
-    if (film.tag_nom !== '') {
-      webSnippet += `<h3>Nominees</h3>\n\n`;
+    if (nominations.length > 0) {
+      webSnippet += `<h3>Nominations</h3>\n`;
+      webSnippet += `${nominations.join(', ')}\n`;
     }
     webSnippet += `<h2 class="screening-header">Creative Team</h2>\n`;
     webSnippet += `<h3>Director(s)</h3>\n${film.director}\n`;
@@ -165,14 +197,14 @@ function makeWebSnippet(film) {
     }
     webSnippet += '[/vc_column_text][/vc_column][/vc_row]';
 
-    fs.writeFile(('dist/WebSnippets/' + film.filename + '.txt'), webSnippet, 'utf8', (err) => {
+    fs.writeFile(('dist/WebSnippets/' + film.filename + '.html'), webSnippet, 'utf8', (err) => {
       if (err) throw err;
-      console.log(`${film.filename}.txt saved.`);
+      console.log(`${film.filename}.html saved.`);
     });
   }
 }
 
-function makeNFO(film, festivalYear) {
+function makeNFO(film, festivalYear, nominations) {
   let filmString = "";
   filmString += '<movie>\n';
   filmString += `\t<id>${film.id}</id>\n`;
@@ -183,39 +215,24 @@ function makeNFO(film, festivalYear) {
   filmString += `\t<plot>${film.plot}</plot>\n`;
   filmString += `\t<studio>${film.studio}</studio>\n`;
   filmString += `\t<director>${film.director}</director>\n`;
-  if (film.genre_aboriginal !== '') {
+  if (film.genre_aboriginal) {
       filmString += `\t<tag>${film.genre_aboriginal}</tag>\n`;
   }
-  if (film.genre_emerging !== '') {
+  if (film.genre_emerging) {
       filmString += `\t<tag>${film.genre_emerging}</tag>\n`;
   }
-  if (film.genre_ruth_shaw !== '') {
+  if (film.genre_ruth_shaw) {
       filmString += `\t<tag>${film.genre_ruth_shaw}</tag>\n`;
   }
-  if (film.tag_nom !== '') {
+  if (film.tag_nom) {
       filmString += `\t<tag>${film.tag_nom}</tag>\n`;
   }
-  if (film.tag_category_nom !== '') {
-      filmString += `\t<tag>${film.tag_category_nom}</tag>\n`;
+  if (nominations.length > 0) {
+    nominations.forEach(function(nomination){
+      filmString += `\t<tag>${nomination} Nominees</tag>\n`;
+    });
   }
-  if (film.tag_aboriginal_nom !== '') {
-      filmString += `\t<tag>${film.tag_aboriginal_nom}</tag>\n`;
-  }
-  if (film.tag_emerging_nom !== '') {
-      filmString += `\t<tag>${film.tag_emerging_nom}</tag>\n`;
-  }
-  if (film.tag_ruth_shaw_nom !== '') {
-      filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
-  }
-  if (film.tag_ruth_shaw_nom !== '') {
-      filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
-  }
-  if (film.tag_dir_nonfiction_nom !== '') {
-      filmString += `\t<tag>${film.tag_dir_nonfiction_nom}</tag>\n`;
-  }
-  if (film.tag_research_nom !== '') {
-      filmString += `\t<tag>${film.tag_research_nom}</tag>\n`;
-  }
+  
   filmString += '\t<playcount>0</playcount>\n';
   filmString += '</movie>';
 
