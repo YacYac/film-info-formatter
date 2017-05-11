@@ -126,59 +126,63 @@ function retrieveCredits(auth) {
   });
 }
 
-function makeNFOs(filmList) {
+function makeFiles(filmList) {
     const festivalYear = 2017;
     
     filmList.forEach(function(film) {
-        let filmString = "";
-        filmString += '<movie>\n';
-        filmString += `\t<id>${film.id}</id>\n`;
-        filmString += `\t<title>${film.title}</title>\n`;
-        filmString += `\t<runtime>${film.runtime}</runtime>\n`;
-        filmString += `\t<genre>${film.genre_category}</genre>\n`;
-        filmString += `\t<year>${festivalYear}</year>\n`;
-        filmString += `\t<plot>${film.plot}</plot>\n`;
-        filmString += `\t<studio>${film.studio}</studio>\n`;
-        filmString += `\t<director>${film.director}</director>\n`;
-        if (film.genre_aboriginal !== '') {
-            filmString += `\t<tag>${film.genre_aboriginal}</tag>\n`;
-        }
-        if (film.genre_emerging !== '') {
-            filmString += `\t<tag>${film.genre_emerging}</tag>\n`;
-        }
-        if (film.genre_ruth_shaw !== '') {
-            filmString += `\t<tag>${film.genre_ruth_shaw}</tag>\n`;
-        }
-        if (film.tag_nom !== '') {
-            filmString += `\t<tag>${film.tag_nom}</tag>\n`;
-        }
-        if (film.tag_category_nom !== '') {
-            filmString += `\t<tag>${film.tag_category_nom}</tag>\n`;
-        }
-        if (film.tag_aboriginal_nom !== '') {
-            filmString += `\t<tag>${film.tag_aboriginal_nom}</tag>\n`;
-        }
-        if (film.tag_emerging_nom !== '') {
-            filmString += `\t<tag>${film.tag_emerging_nom}</tag>\n`;
-        }
-        if (film.tag_ruth_shaw_nom !== '') {
-            filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
-        }
-        if (film.tag_ruth_shaw_nom !== '') {
-            filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
-        }
-        if (film.tag_dir_nonfiction_nom !== '') {
-            filmString += `\t<tag>${film.tag_dir_nonfiction_nom}</tag>\n`;
-        }
-        if (film.tag_research_nom !== '') {
-            filmString += `\t<tag>${film.tag_research_nom}</tag>\n`;
-        }
-        filmString += '\t<playcount>0</playcount>\n';
-        filmString += '</movie>';
-
-        fs.writeFile(('dist/' + film.filename + '.nfo'), filmString, 'utf8', (err) => {
-            if (err) throw err;
-            console.log(`${film.filename}.nfo saved.`);
-        });
+        makeNFO(film, festivalYear);
     }, this);
+}
+
+function makeNFO(film, festivalYear) {
+  let filmString = "";
+  filmString += '<movie>\n';
+  filmString += `\t<id>${film.id}</id>\n`;
+  filmString += `\t<title>${film.title}</title>\n`;
+  filmString += `\t<runtime>${film.runtime}</runtime>\n`;
+  filmString += `\t<genre>${film.genre_category}</genre>\n`;
+  filmString += `\t<year>${festivalYear}</year>\n`;
+  filmString += `\t<plot>${film.plot}</plot>\n`;
+  filmString += `\t<studio>${film.studio}</studio>\n`;
+  filmString += `\t<director>${film.director}</director>\n`;
+  if (film.genre_aboriginal !== '') {
+      filmString += `\t<tag>${film.genre_aboriginal}</tag>\n`;
+  }
+  if (film.genre_emerging !== '') {
+      filmString += `\t<tag>${film.genre_emerging}</tag>\n`;
+  }
+  if (film.genre_ruth_shaw !== '') {
+      filmString += `\t<tag>${film.genre_ruth_shaw}</tag>\n`;
+  }
+  if (film.tag_nom !== '') {
+      filmString += `\t<tag>${film.tag_nom}</tag>\n`;
+  }
+  if (film.tag_category_nom !== '') {
+      filmString += `\t<tag>${film.tag_category_nom}</tag>\n`;
+  }
+  if (film.tag_aboriginal_nom !== '') {
+      filmString += `\t<tag>${film.tag_aboriginal_nom}</tag>\n`;
+  }
+  if (film.tag_emerging_nom !== '') {
+      filmString += `\t<tag>${film.tag_emerging_nom}</tag>\n`;
+  }
+  if (film.tag_ruth_shaw_nom !== '') {
+      filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
+  }
+  if (film.tag_ruth_shaw_nom !== '') {
+      filmString += `\t<tag>${film.tag_ruth_shaw_nom}</tag>\n`;
+  }
+  if (film.tag_dir_nonfiction_nom !== '') {
+      filmString += `\t<tag>${film.tag_dir_nonfiction_nom}</tag>\n`;
+  }
+  if (film.tag_research_nom !== '') {
+      filmString += `\t<tag>${film.tag_research_nom}</tag>\n`;
+  }
+  filmString += '\t<playcount>0</playcount>\n';
+  filmString += '</movie>';
+
+  fs.writeFile(('dist/NFOs/' + film.filename + '.nfo'), filmString, 'utf8', (err) => {
+      if (err) throw err;
+      console.log(`${film.filename}.nfo saved.`);
+  });
 }
