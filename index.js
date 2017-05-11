@@ -122,7 +122,7 @@ function retrieveCredits(auth) {
     var films = _.map(films, function(film) {
         return _.object(keys,film);
     });
-    makeNFOs(films);
+    makeFiles(films);
   });
 }
 
@@ -131,7 +131,42 @@ function makeFiles(filmList) {
     
     filmList.forEach(function(film) {
         makeNFO(film, festivalYear);
+        makeWebSnippet(film);
     }, this);
+}
+
+function makeWebSnippet(film) {
+  let webSnippet = "";
+  let image = 10200; 
+  if (film.screening_string) {
+    // Add black header row for menu
+    webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="80px" bg_color="#000000"][vc_column][/vc_column][/vc_row]';
+    // Add image row
+    webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="40px" bg_color="#000000"][vc_column]';
+    webSnippet += `[vc_single_image image="${image}" img_size="large" alignment="center"]`;
+    webSnippet += '[/vc_column][/vc_row]';
+    // Add description
+    webSnippet += `[vc_row top="20px" bottom="40px"][vc_column][vc_column_text]\n`;
+    webSnippet += `<h1 class="screening-header">${film.title}</h1>\n`;
+    webSnippet += `<span class="screening-time">${film.screening_string}</span>\n`;
+    webSnippet += `<h3>Synpopsis</h3>\n${film.plot}\n`;
+    webSnippet += `<h3>Runtime<\h3>\n${film.runtime}\n`;
+    if (film.tag_nom !== '') {
+      webSnippet += `<h3>Nominees</h3>\n\n`;
+    }
+    webSnippet += `<h2 class="screening-header">Creative Team</h2>\n`;
+    webSnippet += `<h3>Director(s)</h3>\n${film.director}\n`;
+    webSnippet += `<h3>Producers(s)</h3>\n${film.producer}\n`;
+    if (film.researcher !== '') {
+      webSnippet += `<h3>Researcher(s)</h3>\n${film.research}\n`;
+    }
+    webSnippet += '[/vc_column_text][/vc_column][/vc_row]';
+
+    fs.writeFile(('dist/WebSnippets/' + film.filename + '.txt'), webSnippet, 'utf8', (err) => {
+      if (err) throw err;
+      console.log(`${film.filename}.txt saved.`);
+    });
+  }
 }
 
 function makeNFO(film, festivalYear) {
