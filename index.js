@@ -173,27 +173,44 @@ function makeWebSnippet(film, nominations) {
   if (film.screening_string || nominations.length > 0) {
     // Add black header row for menu
     webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="80px" bg_color="#000000"][vc_column][/vc_column][/vc_row]';
-    // Add image row
-    webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="40px" bg_color="#000000"][vc_column]';
-    webSnippet += `[vc_single_image image="${film.image_id}" img_size="large" alignment="center"]`;
-    webSnippet += '[/vc_column][/vc_row]';
+    // Add image row or video rows
+    if (film.trailer_link && film.trailer_provider === 'vimeo') {
+      for (let i = 0; i < 2; i++) {
+        webSnippet += '';
+        if (i % 2 === 0) {
+          webSnippet += '[vc_row full_content_width="" top="0px" bottom="40px" row_show_on="hide_tablet_portrait,hide_mobile_landscape,hide_mobile_portrait"';
+        } else {
+          webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="40px" row_show_on="hide_on_normal_screen,hide_tablet_landscape"';
+        }
+      webSnippet += ' bg_color="#000000"][vc_column]';
+      webSnippet += `[vc_video link="${film.trailer_link}"]`;
+      webSnippet += '[/vc_column][/vc_row]';
+      }
+    } else {
+      webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="40px" bg_color="#000000"][vc_column]';
+      webSnippet += `[vc_single_image image="${film.image_id}" img_size="large" alignment="center"]`;
+      webSnippet += '[/vc_column][/vc_row]';
+    }
     // Add description
     webSnippet += `[vc_row top="20px" bottom="40px"][vc_column][vc_column_text]\n`;
     webSnippet += `<h1 class="screening-header">${film.title}</h1>\n`;
     if (film.screening_string) {
-      webSnippet += `<span class="screening-time">${film.screening_string}</span>\n`;
+      webSnippet += `<h3 class="screening-sub-header">Screening Time</h3>\n${film.screening_string}</span>\n`;
     }
-    webSnippet += `<h3>Synpopsis</h3>\n${film.plot}\n`;
-    webSnippet += `<h3>Runtime</h3>\n${film.runtime}\n`;
+    webSnippet += `<h3 class="screening-sub-header">Synpopsis</h3>\n${film.plot}\n`;
+    webSnippet += `<h3 class="screening-sub-header">Runtime</h3>\n${film.runtime}\n`;
     if (nominations.length > 0) {
-      webSnippet += `<h3>Nominations</h3>\n`;
+      webSnippet += `<h3 class="screening-sub-header">Nominations</h3>\n`;
       webSnippet += `${nominations.join(', ')}\n`;
     }
-    webSnippet += `<h2 class="creative-header">Creative Team</h2>\n`;
-    webSnippet += `<h3>Director(s)</h3>\n${film.director}\n`;
-    webSnippet += `<h3>Producers(s)</h3>\n${film.producer}\n`;
+    webSnippet += `<h2 class="screening-header">Creative Team</h2>\n`;
+    webSnippet += `<h3 class="screening-sub-header">Director(s)</h3>\n${film.director}\n`;
+    webSnippet += `<h3 class="screening-sub-header">Producers(s)</h3>\n${film.producer}\n`;
     if (film.researcher && film.researcher.toLowerCase() !== 'n/a' && film.researcher.toLowerCase() !== 'not applicable') {
-      webSnippet += `<h3>Researcher(s)</h3>\n${film.researcher}\n`;
+      webSnippet += `<h3 class="screening-sub-header">Researcher(s)</h3>\n${film.researcher}\n`;
+    }
+    if (film.studio) {
+      webSnippet += `<h3 class="screening-sub-header">Production Company</h3>\n${film.studio}\n`;
     }
     webSnippet += '[/vc_column_text][/vc_column][/vc_row]';
 
