@@ -182,7 +182,9 @@ function makeWebSnippet(film, nominations) {
     // Add description
     webSnippet += `[vc_row top="20px" bottom="40px"][vc_column][vc_column_text]\n`;
     webSnippet += `<h1 class="screening-header">${film.title}</h1>\n`;
-    webSnippet += `<span class="screening-time">${film.screening_string}</span>\n`;
+    if (film.screening_string) {
+      webSnippet += `<span class="screening-time">${film.screening_string}</span>\n`;
+    }
     webSnippet += `<h3>Synpopsis</h3>\n${film.plot}\n`;
     webSnippet += `<h3>Runtime<\h3>\n${film.runtime}\n`;
     if (nominations.length > 0) {
