@@ -170,14 +170,12 @@ function makeNominationsArray(film, nominations) {
 
 function makeWebSnippet(film, nominations) {
   let webSnippet = "";
-  let image = 10200; 
-  
   if (film.screening_string || nominations.length > 0) {
     // Add black header row for menu
     webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="80px" bg_color="#000000"][vc_column][/vc_column][/vc_row]';
     // Add image row
     webSnippet += '[vc_row full_content_width="row-inner-full" top="0px" bottom="40px" bg_color="#000000"][vc_column]';
-    webSnippet += `[vc_single_image image="${image}" img_size="large" alignment="center"]`;
+    webSnippet += `[vc_single_image image="${film.image_id}" img_size="large" alignment="center"]`;
     webSnippet += '[/vc_column][/vc_row]';
     // Add description
     webSnippet += `[vc_row top="20px" bottom="40px"][vc_column][vc_column_text]\n`;
@@ -186,16 +184,16 @@ function makeWebSnippet(film, nominations) {
       webSnippet += `<span class="screening-time">${film.screening_string}</span>\n`;
     }
     webSnippet += `<h3>Synpopsis</h3>\n${film.plot}\n`;
-    webSnippet += `<h3>Runtime<\h3>\n${film.runtime}\n`;
+    webSnippet += `<h3>Runtime</h3>\n${film.runtime}\n`;
     if (nominations.length > 0) {
       webSnippet += `<h3>Nominations</h3>\n`;
       webSnippet += `${nominations.join(', ')}\n`;
     }
-    webSnippet += `<h2 class="screening-header">Creative Team</h2>\n`;
+    webSnippet += `<h2 class="creative-header">Creative Team</h2>\n`;
     webSnippet += `<h3>Director(s)</h3>\n${film.director}\n`;
     webSnippet += `<h3>Producers(s)</h3>\n${film.producer}\n`;
-    if (film.researcher !== '') {
-      webSnippet += `<h3>Researcher(s)</h3>\n${film.research}\n`;
+    if (film.researcher && film.researcher.toLowerCase() !== 'n/a' && film.researcher.toLowerCase() !== 'not applicable') {
+      webSnippet += `<h3>Researcher(s)</h3>\n${film.researcher}\n`;
     }
     webSnippet += '[/vc_column_text][/vc_column][/vc_row]';
 
