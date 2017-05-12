@@ -198,7 +198,7 @@ function makeWebSnippet(film, nominations) {
       webSnippet += `<h3 class="screening-sub-header">Screening Time</h3>\n${film.screening_string}</span>\n`;
     }
     webSnippet += `<h3 class="screening-sub-header">Synpopsis</h3>\n${film.plot}\n`;
-    webSnippet += `<h3 class="screening-sub-header">Runtime</h3>\n${film.runtime}\n`;
+    webSnippet += `<h3 class="screening-sub-header">Runtime</h3>\n${(film.runtime.substring(0,2) === '00') ? film.runtime.substring(3,film.runtime.length) : film.runtime}\n`;
     if (nominations.length > 0) {
       webSnippet += `<h3 class="screening-sub-header">Nominations</h3>\n`;
       webSnippet += `${nominations.join(', ')}\n`;
